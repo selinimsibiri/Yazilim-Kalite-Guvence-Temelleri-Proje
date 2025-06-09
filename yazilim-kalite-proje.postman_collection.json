@@ -1,0 +1,571 @@
+{
+	"info": {
+		"_postman_id": "afc96c81-7940-4560-a365-de63f175df71",
+		"name": "yazilim-kalite-proje",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28959203",
+		"_collection_link": "https://murat9-7634.postman.co/workspace/marmara~95f79d08-63f7-4351-a6fc-e56d474de116/collection/28959203-afc96c81-7940-4560-a365-de63f175df71?action=share&source=collection_link&creator=28959203"
+	},
+	"item": [
+		{
+			"name": "https://demoqa.com/Account/v1/User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 (Created)\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has userID and username\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"userID\");\r",
+							"    pm.expect(jsonData).to.have.property(\"username\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response does not contain password\", function () {\r",
+							"    const responseBody = pm.response.text();\r",
+							"    pm.expect(responseBody).to.not.include(\"password\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 406 (Not Acceptable) User exists\", function () {\r",
+							"\r",
+							"        pm.response.to.have.status(406);\r",
+							"    \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n    \"userName\": \"marmara4\",\r\n    \"password\": \"Marmara123.*\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demoqa.com/Account/v1/User",
+					"protocol": "https",
+					"host": [
+						"demoqa",
+						"com"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"User"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://demoqa.com/Account/v1/GenerateToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body to JSON\r",
+							"let jsonData;\r",
+							"try {\r",
+							"    jsonData = pm.response.json();\r",
+							"} catch (e) {\r",
+							"    console.log(\"The response is not in JSON format.\");\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has 'status' field and is either 'Success' or 'Failed'\", function () {\r",
+							"    pm.expect(jsonData).to.have.property(\"status\");\r",
+							"    pm.expect([\"Success\", \"Failed\"]).to.include(jsonData.status);\r",
+							"});\r",
+							"\r",
+							"if (jsonData && jsonData.token && jsonData.status === \"Success\") {\r",
+							"    pm.collectionVariables.set(\"token\", jsonData.token);\r",
+							"    console.log(\"Token has been saved to collection variables:\", jsonData.token);\r",
+							"} else {\r",
+							"    console.log(\"No token available or authorization failed.\");\r",
+							"}\r",
+							"\r",
+							"if (jsonData.status === \"Success\") {\r",
+							"    pm.test(\"'expires' field should not be null on success\", function () {\r",
+							"        pm.expect(jsonData.expires).to.not.be.null;\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(\"'expires' field should be null on failure\", function () {\r",
+							"        pm.expect(jsonData.expires).to.be.null;\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"pm.test(\"'result' field contains correct message\", function () {\r",
+							"    pm.expect(jsonData).to.have.property(\"result\");\r",
+							"    if (jsonData.status === \"Success\") {\r",
+							"        pm.expect(jsonData.result).to.include(\"User authorized successfully\");\r",
+							"    } else {\r",
+							"        pm.expect(jsonData.result).to.include(\"User authorization failed\");\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"marmra\",\r\n  \"password\": \"Marmara123.*\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demoqa.com/Account/v1/GenerateToken",
+					"protocol": "https",
+					"host": [
+						"demoqa",
+						"com"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"GenerateToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://demoqa.com/BookStore/v1/Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1️⃣ Check that the status code is 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2️⃣ Check that the response body is in JSON format\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"// 3️⃣ Check that the response body is not empty\r",
+							"pm.test(\"Response body is not empty\", function () {\r",
+							"    pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// 4️⃣ Check that the response has the 'books' property (example for this API)\r",
+							"pm.test(\"Response has a 'books' property\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"books\");\r",
+							"    pm.expect(jsonData.books).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"// 5️⃣ (Optional) Check that at least one book exists\r",
+							"pm.test(\"At least one book is present\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.books.length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"// 6️⃣ (Optional) Check the response time is under a certain threshold (e.g., 1 second)\r",
+							"pm.test(\"Response time is less than 80ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(80);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://demoqa.com/BookStore/v1/Books",
+					"protocol": "https",
+					"host": [
+						"demoqa",
+						"com"
+					],
+					"path": [
+						"BookStore",
+						"v1",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://demoqa.com/BookStore/v1/Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response JSON safely\r",
+							"let jsonData;\r",
+							"try {\r",
+							"    jsonData = pm.response.json();\r",
+							"} catch (e) {\r",
+							"    console.log(\"Response is not in JSON format.\");\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is in JSON format\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body is not empty\", function () {\r",
+							"    pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": \"d5c04088-fba9-40cc-ba07-3afd0269c9f3\",\r\n  \"collectionOfIsbns\": [\r\n    {\r\n      \"isbn\": \"9781593277574\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demoqa.com/BookStore/v1/Books",
+					"protocol": "https",
+					"host": [
+						"demoqa",
+						"com"
+					],
+					"path": [
+						"BookStore",
+						"v1",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://demoqa.com/Account/v1/User/{{user_id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1️⃣ Check that the status code is 204 (No Content), which is typical for a successful DELETE\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"// 3️⃣ (Optional) Check the response time is acceptable (e.g., < 1000ms)\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Account/v1/User/{{user_id}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"User",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://demoqa.com/BookStore/v1/Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1️⃣ Check that the status code is 204 (No Content) for successful deletion\r",
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"// 2️⃣ Confirm that the response body is empty (typical for 204 responses)\r",
+							"pm.test(\"Response body is empty\", function () {\r",
+							"    pm.expect(pm.response.text()).to.eql('');\r",
+							"});\r",
+							"\r",
+							"// 3️⃣ Check the response time is acceptable (e.g., < 1000ms)\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"// 4️⃣ Check Content-Type header is application/json or empty for 204\r",
+							"pm.test(\"Content-Type header is correct\", function () {\r",
+							"    const contentType = pm.response.headers.get('Content-Type');\r",
+							"    pm.expect(contentType).to.be.oneOf(['application/json', '']);\r",
+							"});\r",
+							"\r",
+							"// 5️⃣ Optional: Check that the ISBN you tried to delete was actually removed\r",
+							"// (This requires a follow-up GET request or similar step.)\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"isbn\": \"9781449331818\",\r\n  \"userId\": \"{{user_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/BookStore/v1/Book",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"BookStore",
+						"v1",
+						"Book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://demoqa.com/Account/v1/Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Response'u JSON olarak parse et\r",
+							"let jsonData;\r",
+							"try {\r",
+							"    jsonData = pm.response.json();\r",
+							"} catch (e) {\r",
+							"    console.log(\"Response JSON formatında değil.\");\r",
+							"}\r",
+							"\r",
+							"// Eğer token varsa kaydet\r",
+							"if (jsonData && jsonData.token && jsonData.userId) {\r",
+							"    pm.collectionVariables.set(\"token\", jsonData.token);\r",
+							"    console.log(\"Token kaydedildi:\", jsonData.token);\r",
+							"\r",
+							"       pm.collectionVariables.set(\"user_id\", jsonData.userId);\r",
+							"    console.log(\"user_id collection variables'a kaydedildi:\", jsonData.userId);\r",
+							"} else {\r",
+							"    console.log(\"Response içinde token bulunamadı.\");\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.all.keys('userId', 'username', 'password', 'token', 'expires', 'created_date', 'isActive');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Token is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.have.property('token').that.is.a('string').and.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Expires is a valid date format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.expires).to.exist;\r",
+							"    pm.expect(new Date(responseData.expires).getTime()).to.not.be.NaN;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"marmara\",\r\n    \"password\": \"Marmara123.*\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demoqa.com/Account/v1/Login",
+					"protocol": "https",
+					"host": [
+						"demoqa",
+						"com"
+					],
+					"path": [
+						"Account",
+						"v1",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "Marmara123.*",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "marmara",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6Im1hcm1hcmEiLCJwYXNzd29yZCI6Ik1hcm1hcmExMjMuKiIsImlhdCI6MTc0OTM3MDgwN30.-8RJO_enfuW1X6xGQS5MD9peob-OpOEr6FRIH8a2Hcg",
+			"type": "string"
+		},
+		{
+			"key": "api_url",
+			"value": "https://demoqa.com",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "d5c04088-fba9-40cc-ba07-3afd0269c9f3",
+			"type": "string"
+		}
+	]
+}
